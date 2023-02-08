@@ -1,4 +1,4 @@
-# Linky Shop
+# GeekStore - project under development
 
 See the overall picture of **implementations on microservices with Sprinboot tools** on real-world **e-commerce microservices** project;
 
