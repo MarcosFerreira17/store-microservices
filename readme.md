@@ -2,7 +2,7 @@
 
 See the overall picture of **implementations on microservices with Sprinboot tools** on real-world **e-commerce microservices** project;
 
-![microservices_remastered](/images/project-structure.png)
+![microservices_remastered](/images/project-arch.png)
 
 There is a couple of microservices which implemented **e-commerce** modules over **Catalog, Inventory, Notification** and **Ordering** microservices with **NoSQL (MongoDB)** and **Relational databases (MySQL)** with communicating over **RabbitMQ Event Driven Communication** and using ** API Gateway**.
 
