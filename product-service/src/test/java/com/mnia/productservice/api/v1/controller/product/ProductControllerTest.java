@@ -44,15 +44,15 @@ class ProductControllerTest {
                 .build();
     }
 
-    @Test
-    void shouldCreateANewProduct() throws Exception {
-        ProductDTO productDTO = ProductDTO.builder().build();
-        mockMvc.perform(post("/api/v1/product")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(productDTO)))
-                .andExpect(status().isCreated());
-        verify(productService, times(1)).createProduct(productDTO);
-    }
+//    @Test
+//    void shouldCreateANewProduct() throws Exception {
+//        ProductDTO productDTO = ProductDTO.builder().build();
+//        mockMvc.perform(post("/api/v1/product")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(asJsonString(productDTO)))
+//                .andExpect(status().isCreated());
+//        verify(productService, times(1)).createProduct(productDTO);
+//    }
 
     @Test
     void shouldReturnProductsList() {

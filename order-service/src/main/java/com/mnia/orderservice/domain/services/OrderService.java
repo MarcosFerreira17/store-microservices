@@ -1,5 +1,6 @@
 package com.mnia.orderservice.domain.services;
 
+import com.mnia.orderservice.domain.dtos.InventoryResponse;
 import com.mnia.orderservice.domain.dtos.order.OrderDetailDTO;
 import com.mnia.orderservice.domain.dtos.order.OrderLineItemsDTO;
 import com.mnia.orderservice.domain.entities.Order;
@@ -11,18 +12,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 @Service @Slf4j
 public class OrderService {
-    @Autowired
     private OrderRepository orderRepository;
 
     private static final String REQUEST = "request all products";
     private static final String CORRELATION_ID = "correlationID";
+    private final WebClient webClient;
 
+    public OrderService(OrderRepository orderRepository, WebClient webClient) {
+        this.orderRepository = orderRepository;
+        this.webClient = webClient;
+    }
+
+    @Transactional
     public void placeOrder(OrderDetailDTO orderDetailDto){
         MDC.put(CORRELATION_ID, UUID.randomUUID().toString());
         log.info(REQUEST);
@@ -36,7 +46,24 @@ public class OrderService {
                 .toList();
         order.setOrderLineItemsList(orderLineItems);
 
-        orderRepository.save(order);
+        List<String> skuCodes = order.getOrderLineItemsList().stream()
+                .map(OrderLineItems::getSkuCode)
+                .toList();
+
+        //Call the inventory service, and place order if product is in stock
+        InventoryResponse[] inventoryResponseArray = webClient.get().uri("http://localhost:8082/api/v1/inventory", uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
+                .retrieve().bodyToMono(InventoryResponse[].class)
+                .block();
+
+        boolean allProductsInStock = Arrays.stream(inventoryResponseArray)
+                .allMatch(InventoryResponse::getIsInStock);
+
+        if (allProductsInStock){
+            orderRepository.save(order);
+        } else {
+            throw new IllegalArgumentException("Product is not in stock, please try again later");
+        }
+
     }
 
     private OrderLineItems mapToDto(OrderLineItemsDTO orderLineItemsDto) {

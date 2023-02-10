@@ -23,7 +23,7 @@ public class OrderController {
                                                Pageable pageable){
         final var pageOrdersList = orderService.getOrderList(pageable);
 
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(pageOrdersList);
     }
 
     @PostMapping

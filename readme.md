@@ -21,8 +21,8 @@ Follow these steps to get your development environment set up: (Before Run Start
 * **Memory: 4 GB**
 * CPU: 2
 3. At the root directory which include **docker-compose.yml** files, run below command:
-```csharp
-docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
+```
+docker-compose -f docker-compose.yml -f up -d
 ```
 3. Wait for docker compose all microservices. That’s it! (some microservices need extra time to work so please wait if not worked in first shut)
 
