@@ -1,4 +1,4 @@
-# GeekStore - project under development
+# Store Microservices - project under development
 
 See the overall picture of **implementations on microservices with Sprinboot tools** on real-world **e-commerce microservices** project;
 
