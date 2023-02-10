@@ -6,6 +6,7 @@ import com.mnia.orderservice.domain.dtos.order.OrderLineItemsDTO;
 import com.mnia.orderservice.domain.entities.Order;
 import com.mnia.orderservice.domain.entities.OrderLineItems;
 import com.mnia.orderservice.domain.repositories.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.logging.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +21,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Service @Slf4j
+@Transactional
+@RequiredArgsConstructor
 public class OrderService {
     private OrderRepository orderRepository;
-
     private static final String REQUEST = "request all products";
     private static final String CORRELATION_ID = "correlationID";
-    private final WebClient webClient;
-
-    public OrderService(OrderRepository orderRepository, WebClient webClient) {
-        this.orderRepository = orderRepository;
-        this.webClient = webClient;
-    }
+    private final WebClient.Builder webClientBuilder;
 
     @Transactional
     public void placeOrder(OrderDetailDTO orderDetailDto){
@@ -51,8 +48,11 @@ public class OrderService {
                 .toList();
 
         //Call the inventory service, and place order if product is in stock
-        InventoryResponse[] inventoryResponseArray = webClient.get().uri("http://localhost:8082/api/v1/inventory", uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
-                .retrieve().bodyToMono(InventoryResponse[].class)
+        InventoryResponse[] inventoryResponseArray = webClientBuilder.build().get()
+                .uri("http://inventory-service/api/v1/inventory",
+                        uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
+                .retrieve()
+                .bodyToMono(InventoryResponse[].class)
                 .block();
 
         boolean allProductsInStock = Arrays.stream(inventoryResponseArray)

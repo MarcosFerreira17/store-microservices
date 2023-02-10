@@ -4,6 +4,7 @@
 //import com.mnia.productservice.domain.entities.Product;
 //import com.mnia.productservice.domain.repositories.ProductRepository;
 //import org.junit.jupiter.api.Test;
+//import org.mockito.Mock;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 //import org.springframework.data.domain.Page;
@@ -16,14 +17,14 @@
 //
 //@DataMongoTest
 //class ProductRepositoryTest {
-//    @Autowired
+//    @Mock
 //    private ProductRepository productRepository;
 //
 //    @Test
 //    void getProductList() {
 //        Pageable pageable = PageRequest.of(0, 10);
 //        Optional<Page<ProductDTO>> productList = productRepository.getProductList(pageable);
-//        assertThat(productList).isNotEmpty();
+//        assertThat(productList).isNotPresent();
 //    }
 //
 //    @Test
@@ -33,6 +34,6 @@
 //        product.setId(id);
 //        productRepository.save(product);
 //        Optional<ProductDTO> productDetail = productRepository.getProductDetailById(id);
-//        assertThat(productDetail).isNotEmpty();
+//        assertThat(productDetail).isNotPresent();
 //    }
 //}
